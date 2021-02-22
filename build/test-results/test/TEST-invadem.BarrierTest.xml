@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="invadem.BarrierTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2019-11-10T04:49:02" hostname="Kroft2.local" time="0.001">
+  <properties/>
+  <testcase name="testListBarrierComponents" classname="invadem.BarrierTest" time="0.001"/>
+  <testcase name="barrierConstruction" classname="invadem.BarrierTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

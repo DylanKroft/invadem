@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>App.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ass2</a> &gt; <a href="index.source.html" class="el_package">invadem</a> &gt; <span class="el_source">App.java</span></div><h1>App.java</h1><pre class="source lang-java linenums">package invadem;
+
+import processing.core.PApplet;
+import processing.core.PFont;
+import processing.core.PImage;
+import java.util.*;
+
+public class App extends PApplet {
+
+    //GAME VARIABLES --------------------------------------------------------------------------------------------------
+
+    //GENERAL GAME SETTINGS
+<span class="fc" id="L13">    private boolean start = false;</span>
+    private String mode;
+<span class="fc" id="L15">    private int wins = 0;</span>
+<span class="fc" id="L16">    private long time = 0;</span>
+<span class="fc" id="L17">    private int highScore = 10000;</span>
+<span class="fc" id="L18">    private int score = 0;</span>
+
+    private PFont gameFont;
+
+    private Tank tank;
+<span class="fc" id="L23">    private boolean[] keys = new boolean[3];</span>
+
+    private InvaderController invadersC;
+<span class="fc" id="L26">    private List&lt;Invader&gt; invaders = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L27">    private List&lt;Invader&gt; invadersToRemove = new ArrayList&lt;&gt;();</span>
+
+
+    //IMAGES
+    private PImage bulletImg;
+    private PImage powerBulletImg;
+    private PImage gameOverImg;
+    private PImage nextLevelImg;
+    private PImage laserImg;
+    private PImage laserBall;
+    private PImage explosion;
+
+    private PImage invader1;
+    private PImage invader2;
+    private PImage powerInvader1;
+    private PImage powerInvader2;
+    private PImage armorInvader1;
+    private PImage armorInvader2;
+
+    //SHOT SETTINGS
+    private ProjectileController bullets;
+    private Laser laser;
+    private int laserFrameCount;
+
+    //BARRIER SETTINGS
+    private Barrier middleBarrier;
+    private Barrier leftBarrier;
+    private Barrier rightBarrier;
+    private List&lt;Barrier&gt; barriers;
+
+    //GAME OBJECT SETUP -----------------------------------------------------------------------------------------------
+
+<span class="fc" id="L59">    public App() {</span>
+
+<span class="fc" id="L61">        tank = new Tank(319,450);</span>
+<span class="fc" id="L62">        bullets = new ProjectileController();</span>
+<span class="fc" id="L63">        invadersC = new InvaderController();</span>
+<span class="fc" id="L64">        barriers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L65">        middleBarrier = new Barrier();</span>
+<span class="fc" id="L66">        leftBarrier = new Barrier();</span>
+<span class="fc" id="L67">        rightBarrier = new Barrier();</span>
+<span class="fc" id="L68">        laserFrameCount = 0;</span>
+<span class="fc" id="L69">    }</span>
+
+
+    //GENERAL SETUP ---------------------------------------------------------------------------------------------------
+
+    public void setup() {
+
+<span class="fc" id="L76">        frameRate(60);</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">        if (millis() &lt; 2000){</span>
+<span class="fc" id="L78">            this.setMode(&quot;loading&quot;);</span>
+        }
+        else{
+<span class="fc" id="L81">            this.setMode(&quot;game&quot;);</span>
+        }
+<span class="fc" id="L83">        gameOverImg = loadImage(&quot;gameover.png&quot;);</span>
+<span class="fc" id="L84">        nextLevelImg = loadImage(&quot;nextlevel.png&quot;);</span>
+<span class="fc" id="L85">        keys[0] = false; //keycheck for moving left</span>
+<span class="fc" id="L86">        keys[1] = false; //keycheck for moving right</span>
+
+        //image from: https://8bitweapon.com/8-bit-weapon-bits-with-byte-background-png/
+<span class="fc" id="L89">        background(loadImage(&quot;Space.png&quot;));</span>
+<span class="fc" id="L90">        gameFont = createFont(&quot;PressStart2P-Regular.ttf&quot;, 10);</span>
+
+<span class="fc" id="L92">        tank.setImg(loadImage(&quot;tank1.png&quot;));</span>
+<span class="fc" id="L93">        explosion = loadImage(&quot;explode1.png&quot;);</span>
+
+<span class="fc" id="L95">        invader1 = loadImage(&quot;invader1.png&quot;);</span>
+<span class="fc" id="L96">        invader2 = loadImage(&quot;invader2.png&quot;);</span>
+<span class="fc" id="L97">        powerInvader1 = loadImage(&quot;invader1_power.png&quot;);</span>
+<span class="fc" id="L98">        powerInvader2 = loadImage(&quot;invader2_power.png&quot;);</span>
+<span class="fc" id="L99">        armorInvader1 = loadImage(&quot;invader1_armoured.png&quot;);</span>
+<span class="fc" id="L100">        armorInvader2 = loadImage(&quot;invader2_armoured.png&quot;);</span>
+
+<span class="fc" id="L102">        invaders = invadersC.loadInvaders(invader1, invader2, powerInvader1, powerInvader2, armorInvader1, armorInvader2);</span>
+
+        //BARRIER SETUP
+<span class="fc" id="L105">        this.loadBarrier(middleBarrier, 326, 410);</span>
+<span class="fc" id="L106">        this.loadBarrier(leftBarrier, 220, 410);</span>
+<span class="fc" id="L107">        this.loadBarrier(rightBarrier, 440, 410);</span>
+<span class="fc" id="L108">        barriers.add(middleBarrier);</span>
+<span class="fc" id="L109">        barriers.add(leftBarrier);</span>
+<span class="fc" id="L110">        barriers.add(rightBarrier);</span>
+
+        //PROJECTILES/LASER SETUP
+<span class="fc" id="L113">        bulletImg = loadImage(&quot;projectile.png&quot;);</span>
+<span class="fc" id="L114">        laserImg = loadImage(&quot;laser.png&quot;);</span>
+<span class="fc" id="L115">        powerBulletImg = loadImage(&quot;projectile_lg.png&quot;);</span>
+<span class="fc" id="L116">        laserBall = loadImage(&quot;laserBall.png&quot;);</span>
+<span class="fc" id="L117">    }</span>
+
+    public void settings() {
+<span class="fc" id="L120">        size(640, 480);</span>
+<span class="fc" id="L121">    }</span>
+
+    //Main Game Loop --------------------------------------------------------------------------------------------------
+
+    public void draw() {
+
+        //LOADING SCREEN **********************************************************************************************
+<span class="fc bfc" id="L128" title="All 2 branches covered.">        if(mode.equals(&quot;loading&quot;)){</span>
+            //image from https://www.pinterest.com.au/pin/291819250840266640/
+<span class="fc" id="L130">            background(loadImage(&quot;loading.png&quot;));</span>
+        }
+
+        //GAME MODE SCREEN ********************************************************************************************
+<span class="fc bfc" id="L134" title="All 2 branches covered.">        else if (mode.equals(&quot;game&quot;)) {</span>
+<span class="fc" id="L135">            background(loadImage(&quot;Space.png&quot;));</span>
+<span class="fc" id="L136">            textFont(gameFont);</span>
+<span class="fc" id="L137">            textAlign(CENTER);</span>
+
+            //Calls all animations &amp; movement
+<span class="fc" id="L140">            this.tick();</span>
+
+            //draws tank lives and lasers left
+<span class="fc" id="L143">            tank.drawLives(this);</span>
+<span class="fc" id="L144">            tank.drawLasersLeft(this, laserBall);</span>
+
+            //draws out lives and lasers left, and accuracy tracker
+<span class="fc" id="L147">            this.accuracyTracker();</span>
+
+            //draw tank
+<span class="fc" id="L150">            tank.draw(this);</span>
+
+            //draw barriers
+<span class="fc" id="L153">            middleBarrier.drawBarrier(this);</span>
+<span class="fc" id="L154">            leftBarrier.drawBarrier(this);</span>
+<span class="fc" id="L155">            rightBarrier.drawBarrier(this);</span>
+
+            //draw projectiles
+<span class="fc" id="L158">            bullets.draw(this, bulletImg, powerBulletImg);</span>
+
+            //draw invaders
+<span class="fc" id="L161">            invadersC.draw(this);</span>
+
+            //draws out explosion when invader is hit
+<span class="fc" id="L164">            invadersC.drawExplosion(this,explosion,invadersToRemove);</span>
+
+            //draw LASER SHOT (special weapon that lasts three frames)
+<span class="fc bfc" id="L167" title="All 4 branches covered.">            if(tank.laserFired() || laserFrameCount &gt; 0){</span>
+<span class="fc" id="L168">                laserFrameCount++;</span>
+<span class="fc" id="L169">                laser.draw(this, laserImg, tank.getXPos());</span>
+<span class="fc" id="L170">                keyReleased();</span>
+
+<span class="fc bfc" id="L172" title="All 2 branches covered.">                if(laserFrameCount == 3){</span>
+<span class="fc" id="L173">                    laserFrameCount = 0;</span>
+                }
+            }
+
+        }
+
+        //GAME OVER SCREEN ********************************************************************************************
+<span class="fc bfc" id="L180" title="All 2 branches covered.">        else if (mode.equals(&quot;gameOver&quot;)) {</span>
+<span class="fc" id="L181">            background(178, 34, 34);</span>
+<span class="fc" id="L182">            image(gameOverImg, 260, 240);</span>
+
+            //2 second delay
+<span class="fc bfc" id="L185" title="All 2 branches covered.">            if (frameCount == 120) {</span>
+<span class="fc" id="L186">                this.reset();</span>
+<span class="fc" id="L187">                this.setMode(&quot;game&quot;);</span>
+            }
+        }
+
+        //NEXT LEVEL SCREEN *******************************************************************************************
+<span class="pc bpc" id="L192" title="1 of 2 branches missed.">        else if (mode.equals(&quot;nextLevel&quot;)) {</span>
+<span class="fc" id="L193">            background(0, 100, 0);</span>
+<span class="fc" id="L194">            image(nextLevelImg, 250, 240);</span>
+
+            //2 second delay
+<span class="fc bfc" id="L197" title="All 2 branches covered.">            if (frameCount == 120) {</span>
+<span class="fc" id="L198">                wins++;</span>
+<span class="fc" id="L199">                this.reset();</span>
+<span class="fc" id="L200">                this.setMode(&quot;game&quot;);</span>
+            }
+        }
+<span class="fc" id="L203">    }</span>
+
+    //ANIMATION &amp; ACTIONS ---------------------------------------------------------------------------------------------
+    public void tick() {
+
+<span class="fc" id="L208">        time = millis();</span>
+
+        //Movement controls
+<span class="fc bfc" id="L211" title="All 2 branches covered.">        if (keys[0]) {</span>
+<span class="fc" id="L212">            tank.move(&quot;left&quot;);</span>
+        }
+<span class="fc bfc" id="L214" title="All 2 branches covered.">        if (keys[1]) {</span>
+<span class="fc" id="L215">            tank.move(&quot;right&quot;);</span>
+        }
+
+        //random invader shoots a bullet
+<span class="fc" id="L219">        Projectile p = invadersC.randomShot(wins,time);</span>
+<span class="fc bfc" id="L220" title="All 2 branches covered.">        if(p != null){</span>
+<span class="fc" id="L221">            bullets.addBullet(p);</span>
+        }
+
+<span class="fc" id="L224">        bullets.move(); //tank projectiles go upwards, invader ones go downwards</span>
+
+        //bullets added to list for removal if collision occurs
+<span class="fc" id="L227">        invadersToRemove = bullets.bulletCollisionCheck(barriers, invaders, tank); //checks for collision</span>
+
+        //laser fired &amp; check for collision
+<span class="fc" id="L230">        invadersToRemove.addAll(bullets.laserCollisionCheck(barriers, invaders, laser, tank.laserFired()));</span>
+
+        //updates scores
+<span class="fc" id="L233">        HashSet&lt;Invader&gt; deadInvaders = new HashSet&lt;&gt;(invadersToRemove);</span>
+<span class="fc" id="L234">        this.scoreTracker(deadInvaders);</span>
+
+        //invader movement
+<span class="fc" id="L237">        invaders.stream().forEach(Invader::move);</span>
+
+
+        //objects to be removed after each frame
+<span class="fc" id="L241">        invaders.removeAll(invadersToRemove);</span>
+<span class="fc" id="L242">        bullets.removeBullets();</span>
+
+        //removes barrier component completely if it's been hit three times
+<span class="fc" id="L245">        barriers.forEach(barrier -&gt; barrier.list().removeIf(BComponent::isDestroyed));</span>
+
+        //GAME OVER if invaders reach barrier
+<span class="fc bfc" id="L248" title="All 2 branches covered.">        for(Invader invader: invaders){</span>
+<span class="fc bfc" id="L249" title="All 2 branches covered.">            if(invader.getYPos() &gt;= 384){</span>
+<span class="fc" id="L250">                this.setMode(&quot;gameOver&quot;);</span>
+<span class="fc" id="L251">                frameCount = 0;</span>
+            }
+<span class="fc" id="L253">        }</span>
+
+        //GAME OVER if tank is hit three times
+<span class="fc bfc" id="L256" title="All 2 branches covered.">        if(tank.isDestroyed()){</span>
+<span class="fc" id="L257">            this.setMode(&quot;gameOver&quot;);</span>
+<span class="fc" id="L258">            frameCount = 0;</span>
+        }
+
+        //NEXT LEVEL if no more invaders left
+<span class="pc bpc" id="L262" title="1 of 2 branches missed.">        if(invaders.size() == 0){</span>
+<span class="nc" id="L263">            this.setMode(&quot;nextLevel&quot;);</span>
+<span class="nc" id="L264">            frameCount = 0;</span>
+        }
+<span class="fc" id="L266">    }</span>
+
+    //KEYBOARD INPUT --------------------------------------------------------------------------------------------------
+
+    public void keyPressed(){
+
+        //Exits loading screen if enter key is pressed
+<span class="fc bfc" id="L273" title="All 4 branches covered.">        if(keyCode == 32 &amp;&amp; mode.equals(&quot;loading&quot;)){</span>
+<span class="fc" id="L274">            this.setMode(&quot;game&quot;);</span>
+        }
+
+        //Available keys (left, right, space, shift)
+<span class="fc bfc" id="L278" title="All 8 branches covered.">        else if(keyCode == 32 || keyCode == 39 || keyCode == 37 || keyCode == 16){</span>
+
+            //adds a bullet to list of bullets fired if space bar is pressed
+<span class="pc bpc" id="L281" title="1 of 4 branches missed.">            if(keyCode == 32 &amp;&amp; !tank.fired()){</span>
+<span class="fc" id="L282">                bullets.addBullet(this.tank.shoot());</span>
+            }
+
+            //tank moves left 1px
+<span class="fc bfc" id="L286" title="All 2 branches covered.">            if(keyCode == 37){</span>
+<span class="fc" id="L287">                keys[0] = true;</span>
+            }
+
+            //tank moves right 1px
+<span class="fc bfc" id="L291" title="All 2 branches covered.">            if(keyCode == 39){</span>
+<span class="fc" id="L292">                keys[1] = true;</span>
+            }
+
+            //laser fired
+<span class="pc bpc" id="L296" title="1 of 4 branches missed.">            if(keyCode == 16 &amp;&amp; mode == &quot;game&quot;){</span>
+<span class="fc" id="L297">                laser = tank.laser();</span>
+            }
+        }
+<span class="fc" id="L300">    }</span>
+
+    public void keyReleased() {
+
+<span class="fc bfc" id="L304" title="All 8 branches covered.">        if(keyCode == 32 || keyCode == 39 || keyCode == 37 || keyCode == 16) {</span>
+
+            //stops moving left
+<span class="fc bfc" id="L307" title="All 2 branches covered.">            if(keyCode == 37){</span>
+<span class="fc" id="L308">                keys[0] = false;</span>
+            }
+
+            //stops moving right
+<span class="fc bfc" id="L312" title="All 2 branches covered.">            if(keyCode == 39){</span>
+<span class="fc" id="L313">                keys[1] = false;</span>
+            }
+
+            //tank can shoot again
+<span class="fc" id="L317">            tank.resetCannon();</span>
+<span class="fc" id="L318">            tank.resetLaser();</span>
+        }
+<span class="fc" id="L320">    }</span>
+
+    //GAME RESET UPON &quot;NEXT LEVEL&quot; OR &quot;GAME OVER&quot; ---------------------------------------------------------------------
+    public void reset(){
+
+        //objects and lists reset
+<span class="fc" id="L326">        tank = new Tank(319,450);</span>
+<span class="fc" id="L327">        barriers.clear();</span>
+<span class="fc" id="L328">        invaders.clear();</span>
+<span class="fc" id="L329">        bullets.list().clear();</span>
+
+        //setup is run again
+<span class="fc" id="L332">        this.setup();</span>
+
+<span class="fc" id="L334">    }</span>
+
+    //CREATES AND POSITIONS BARRIERS ----------------------------------------------------------------------------------
+
+    public void loadBarrier(Barrier b, int x, int y){
+
+        //Each barrier components image states are loaded once
+<span class="fc" id="L341">        List&lt;BComponent&gt; components = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L342">        String[] imgFiles = new String[] {&quot;bt1.png&quot;, &quot;bt2.png&quot;, &quot;bt3.png&quot;, &quot;e.png&quot;,&quot;bl1.png&quot;, &quot;bl2.png&quot;, &quot;bl3.png&quot;, &quot;e.png&quot;,</span>
+                                            &quot;br1.png&quot;, &quot;br2.png&quot;, &quot;br3.png&quot;, &quot;e.png&quot;, &quot;bs1.png&quot;, &quot;bs2.png&quot;, &quot;bs3.png&quot;, &quot;e.png&quot; };
+
+<span class="fc" id="L345">        int bImgCounter = 0; //counter for iterating through imgFiles to make sure images match their barrier type</span>
+
+        //An array of image arrays for each barrier component
+<span class="fc" id="L348">        PImage[][] imgSets = new PImage[7][4];</span>
+
+        //iterating through barrier component image arrays
+<span class="fc bfc" id="L351" title="All 2 branches covered.">        for(PImage[] imgSet: imgSets){</span>
+
+            //iterating through the four types of images for each barrier component
+<span class="fc bfc" id="L354" title="All 2 branches covered.">            for(int i = 0; i &lt; 3; i++){</span>
+<span class="fc" id="L355">                imgSet[i] = loadImage(imgFiles[i+bImgCounter]);</span>
+            }
+            //the last four images in imgFiles are reused for the four solid barriers
+<span class="fc bfc" id="L358" title="All 2 branches covered.">            if(bImgCounter &lt; 12) {</span>
+<span class="fc" id="L359">                bImgCounter += 4;</span>
+            }
+        }
+
+        //adding each new barrier component to the barrier with a correct position with respect to the other barrier components
+<span class="fc" id="L364">        components.add(new BComponent(imgSets[0],x,y));</span>
+<span class="fc" id="L365">        components.add(new BComponent(imgSets[1],x-8,y));</span>
+<span class="fc" id="L366">        components.add(new BComponent(imgSets[2],x+8,y));</span>
+<span class="fc" id="L367">        components.add(new BComponent(imgSets[3],x-8,y+16));</span>
+<span class="fc" id="L368">        components.add(new BComponent(imgSets[4],x-8,y+8));</span>
+<span class="fc" id="L369">        components.add(new BComponent(imgSets[5],x+8,y+16));</span>
+<span class="fc" id="L370">        components.add(new BComponent(imgSets[6],x+8,y+8));</span>
+
+        //adds barrier component objects to barrier
+<span class="fc" id="L373">        b.set(components);</span>
+<span class="fc" id="L374">    }</span>
+
+    //ACCURACY TRACKER ------------------------------------------------------------------------------------------------
+    public void accuracyTracker(){
+
+<span class="fc" id="L379">        String accuracy = &quot;0.00%&quot;; //before shots fired</span>
+
+<span class="fc bfc" id="L381" title="All 2 branches covered.">        if(tank.getShotsFired() &gt; 0) {</span>
+
+<span class="fc" id="L383">            float acc = ((40-invaders.size()) / (tank.getShotsFired())) * 100;</span>
+
+<span class="fc bfc" id="L385" title="All 2 branches covered.">            if(acc &gt;= 100) {</span>
+<span class="fc" id="L386">                acc = 100;</span>
+            }
+
+<span class="fc" id="L389">            accuracy = String.format(&quot;%.2f&quot;, (acc)) + &quot;%&quot;;</span>
+        }
+        //displaying accuracy
+<span class="fc" id="L392">        text(accuracy, 551, 218);</span>
+
+<span class="fc" id="L394">    }</span>
+
+    //SCORE TRACKER ---------------------------------------------------------------------------------------------------
+    public void scoreTracker(HashSet&lt;Invader&gt; outvaders){
+
+<span class="fc bfc" id="L399" title="All 2 branches covered.">        for(Invader invader: outvaders){</span>
+<span class="fc bfc" id="L400" title="All 4 branches covered.">            if (invader instanceof PowerInvader || invader instanceof ArmorInvader){</span>
+<span class="fc" id="L401">                score += 250;</span>
+            }
+            else {
+<span class="fc" id="L404">                score += 100;</span>
+            }
+<span class="fc" id="L406">        }</span>
+<span class="pc bpc" id="L407" title="1 of 2 branches missed.">        if (score &gt; highScore){</span>
+<span class="nc" id="L408">            highScore = score;</span>
+        }
+
+        //draws out score and high score
+<span class="fc" id="L412">        text(Integer.toString(highScore), 551, 78);</span>
+<span class="fc" id="L413">        text(Integer.toString(score), 551, 150);</span>
+<span class="fc" id="L414">    }</span>
+
+    //SET GAME MODE ---------------------------------------------------------------------------------------------------
+    public void setMode(String mode){
+<span class="fc" id="L418">        this.mode = mode;</span>
+<span class="fc" id="L419">    }</span>
+
+
+
+    //Rad
+    public static void main(String[] args) {
+<span class="nc" id="L425">        PApplet.main(&quot;invadem.App&quot;);</span>
+<span class="nc" id="L426">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

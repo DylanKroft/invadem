@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ArmorInvader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ass2</a> &gt; <a href="index.source.html" class="el_package">invadem</a> &gt; <span class="el_source">ArmorInvader.java</span></div><h1>ArmorInvader.java</h1><pre class="source lang-java linenums">package invadem;
+
+public class ArmorInvader extends Invader {
+
+    private int lives;
+
+    public ArmorInvader(int xPos, int yPos) {
+<span class="fc" id="L8">        super(xPos, yPos);</span>
+<span class="fc" id="L9">        lives = 3;</span>
+<span class="fc" id="L10">    }</span>
+
+    @Override
+    //increments &quot;lives&quot;. If state = 3, the barrier component is marked as destroyed
+    public void destroy(GameObject g) {
+
+<span class="fc bfc" id="L16" title="All 2 branches covered.">        if(lives &gt; 0){</span>
+<span class="fc" id="L17">            lives--;</span>
+        }
+
+<span class="fc bfc" id="L20" title="All 4 branches covered.">        if(lives == 0 || g.getHeight() == 500){</span>
+<span class="fc" id="L21">            this.destroyed = true;</span>
+        }
+<span class="fc" id="L23">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

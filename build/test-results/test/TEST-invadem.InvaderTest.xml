@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="invadem.InvaderTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2019-11-10T04:49:02" hostname="Kroft2.local" time="0.002">
+  <properties/>
+  <testcase name="testMoveLeft1second" classname="invadem.InvaderTest" time="0.0"/>
+  <testcase name="testMoveRight1Px" classname="invadem.InvaderTest" time="0.0"/>
+  <testcase name="testMoveLeft1Px" classname="invadem.InvaderTest" time="0.001"/>
+  <testcase name="testMoveRight1second" classname="invadem.InvaderTest" time="0.0"/>
+  <testcase name="testInvaderConstruction" classname="invadem.InvaderTest" time="0.0"/>
+  <testcase name="testChangeSpriteGetImg" classname="invadem.InvaderTest" time="0.0"/>
+  <testcase name="testMoveDown" classname="invadem.InvaderTest" time="0.001"/>
+  <testcase name="testLeftRightMoveBounds" classname="invadem.InvaderTest" time="0.0"/>
+  <testcase name="testSetSprite" classname="invadem.InvaderTest" time="0.0"/>
+  <testcase name="testInvaderShoot" classname="invadem.InvaderTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Tank.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ass2</a> &gt; <a href="index.source.html" class="el_package">invadem</a> &gt; <span class="el_source">Tank.java</span></div><h1>Tank.java</h1><pre class="source lang-java linenums">package invadem;
+
+import processing.core.PApplet;
+import processing.core.PImage;
+
+
+public class Tank extends GameObject {
+
+    private int lives;
+    private boolean shotFired;
+    private float shotsFired;
+    private int lasersLeft;
+    private boolean laserFired;
+
+
+    //Tank Constructor
+<span class="fc" id="L17">    public Tank(int x, int y){</span>
+<span class="fc" id="L18">        this.xPos = x; //starting position</span>
+<span class="fc" id="L19">        this.yPos = y; //y coordinate of tank never changes</span>
+<span class="fc" id="L20">        width = 22;</span>
+<span class="fc" id="L21">        height = 16;</span>
+
+<span class="fc" id="L23">        lives = 3;</span>
+<span class="fc" id="L24">        destroyed = false;</span>
+
+<span class="fc" id="L26">        shotFired = false; //checks if a shot has been fired already during a keypress instance</span>
+<span class="fc" id="L27">        shotsFired = 0; //tracks number of shots tank has fired for accuracy measurement</span>
+
+<span class="fc" id="L29">        laserFired = false;</span>
+<span class="fc" id="L30">        lasersLeft = 3;</span>
+<span class="fc" id="L31">    }</span>
+
+    //Tank movement
+    public void move(String n){
+
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        if (n.equals(&quot;right&quot;)) {</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">            if (xPos &lt; 460) {xPos++;}</span>
+        }
+
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        else if (n.equals(&quot;left&quot;)) {</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">            if (xPos &gt; 180) {xPos--;}</span>
+        }
+<span class="fc" id="L43">    }</span>
+
+    //fires bullet (creates new Projectile object)
+   public Projectile shoot(){
+<span class="fc" id="L47">       shotFired = true; //prevents tank from firing another shot until the spacebar is released and pressed again</span>
+<span class="fc" id="L48">       shotsFired++;</span>
+<span class="fc" id="L49">       Projectile p = new Projectile(xPos, yPos);</span>
+<span class="fc" id="L50">       p.setFriendly();</span>
+<span class="fc" id="L51">       return p;</span>
+    }
+
+    //fires laser (creates new laser object)
+    public Laser laser(){
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        if(lasersLeft &gt; 0) {</span>
+<span class="fc" id="L57">            shotsFired++;</span>
+<span class="fc" id="L58">            laserFired = true;</span>
+<span class="fc" id="L59">            lasersLeft--;</span>
+<span class="fc" id="L60">            return new Laser(xPos, yPos);</span>
+        }
+<span class="fc" id="L62">        return null;</span>
+    }
+
+    //returns lives left
+    public int getLives(){
+<span class="fc" id="L67">        return this.lives;</span>
+    }
+
+    //TANK LIVES (displays number of lives left)
+    public void drawLives(PApplet app){
+<span class="fc bfc" id="L72" title="All 2 branches covered.">        if (this.getLives() == 3) {</span>
+<span class="fc" id="L73">            app.image(this.getImg(), 60, 145);</span>
+        }
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">        if (this.getLives() &gt;= 2) {</span>
+<span class="fc" id="L76">            app.image(this.getImg(), 60, 110);</span>
+        }
+<span class="fc" id="L78">        app.image(this.getImg(), 60, 75);</span>
+<span class="fc" id="L79">    }</span>
+
+    //lasers remaining (displays number of lasers remaining)
+    public void drawLasersLeft(PApplet app, PImage laserBall){
+<span class="fc bfc" id="L83" title="All 2 branches covered.">        if (this.getLasersLeft() &gt; 2) {</span>
+<span class="fc" id="L84">            app.image(laserBall, 88, 220);</span>
+        }
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        if(this.getLasersLeft() &gt; 1){</span>
+<span class="fc" id="L87">            app.image(laserBall,63,220);</span>
+        }
+<span class="fc bfc" id="L89" title="All 2 branches covered.">        if(this.getLasersLeft() &gt; 0){</span>
+<span class="fc" id="L90">            app.image(laserBall,38,220);</span>
+        }
+<span class="fc" id="L92">    }</span>
+
+    @Override
+    //subtracts one life each time tank is hit, up until three lives are lost
+    public void destroy(GameObject g){
+<span class="fc bfc" id="L97" title="All 2 branches covered.">        if(lives &gt;= 1){</span>
+<span class="fc" id="L98">            lives--;</span>
+        }
+<span class="fc bfc" id="L100" title="All 4 branches covered.">        if(lives == 0 || g.getHeight() == 5){</span>
+<span class="fc" id="L101">            destroyed = true;</span>
+        }
+<span class="fc" id="L103">    }</span>
+
+    //returns true if a shot has been fired
+    public boolean fired(){
+<span class="fc" id="L107">        return shotFired;</span>
+    }
+
+    //returns true if a laser has been fired
+    public boolean laserFired(){
+<span class="fc" id="L112">        return laserFired;</span>
+    }
+
+    //returns number of shots fired this round
+    public float getShotsFired(){
+<span class="fc" id="L117">        return shotsFired;</span>
+    }
+
+    //allows tank to shoot another bullet
+    public void resetCannon(){
+<span class="fc" id="L122">        shotFired = false;</span>
+<span class="fc" id="L123">    }</span>
+
+    //returns the number of lasers a tank is able to shoot
+    public int getLasersLeft(){
+<span class="fc" id="L127">        return lasersLeft;</span>
+    }
+
+    //allows tank to shoot another laser (provided that it still has lasers)
+    public void resetLaser(){
+<span class="fc" id="L132">        laserFired = false;</span>
+<span class="fc" id="L133">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

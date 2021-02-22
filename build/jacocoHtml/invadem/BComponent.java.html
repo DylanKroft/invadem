@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BComponent.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ass2</a> &gt; <a href="index.source.html" class="el_package">invadem</a> &gt; <span class="el_source">BComponent.java</span></div><h1>BComponent.java</h1><pre class="source lang-java linenums">package invadem;
+
+import processing.core.PImage;
+
+public class BComponent extends GameObject {
+
+    PImage[] img;
+    private int state;
+
+    //Barrier Component Constructor
+<span class="fc" id="L11">    public BComponent(PImage[] img, int xPos, int yPos){</span>
+
+<span class="fc" id="L13">        this.img = img;</span>
+<span class="fc" id="L14">        this.xPos = xPos;</span>
+<span class="fc" id="L15">        this.yPos = yPos;</span>
+<span class="fc" id="L16">        this.state = 0; //indicates how &quot;destroyed&quot; the barrier component is</span>
+<span class="fc" id="L17">        this.width = 8;</span>
+<span class="fc" id="L18">        this.height = 8;</span>
+<span class="fc" id="L19">        this.destroyed = false;</span>
+<span class="fc" id="L20">    }</span>
+
+    @Override
+    //returns an image of the barrier component based on its state
+    public PImage getImg(){
+<span class="fc" id="L25">        return this.img[state];</span>
+    }
+
+    @Override
+    //increments &quot;state&quot;. If state = 3, the barrier component is marked as destroyed
+    public void destroy(GameObject g) {
+
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        if(state &lt; 3){</span>
+<span class="fc" id="L33">            state++;</span>
+        }
+
+<span class="fc bfc" id="L36" title="All 6 branches covered.">        if(state == 3 || g.getHeight() == 5 || g.getHeight() == 500){</span>
+<span class="fc" id="L37">            this.destroyed = true;</span>
+        }
+<span class="fc" id="L39">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="invadem.GameObjectTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2019-11-10T04:49:02" hostname="Kroft2.local" time="0.001">
+  <properties/>
+  <testcase name="testGetWidth" classname="invadem.GameObjectTest" time="0.0"/>
+  <testcase name="testGetXPos" classname="invadem.GameObjectTest" time="0.0"/>
+  <testcase name="testGetYPos" classname="invadem.GameObjectTest" time="0.0"/>
+  <testcase name="testSetGetImg" classname="invadem.GameObjectTest" time="0.0"/>
+  <testcase name="testGetHeight" classname="invadem.GameObjectTest" time="0.0"/>
+  <testcase name="testDestroy" classname="invadem.GameObjectTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

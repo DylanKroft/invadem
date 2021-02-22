@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="invadem.ProjectileControllerTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2019-11-10T04:49:02" hostname="Kroft2.local" time="0.003">
+  <properties/>
+  <testcase name="testMove" classname="invadem.ProjectileControllerTest" time="0.001"/>
+  <testcase name="testProjectileConstruction" classname="invadem.ProjectileControllerTest" time="0.0"/>
+  <testcase name="testTankBulletCollisionBarrierInvader" classname="invadem.ProjectileControllerTest" time="0.0"/>
+  <testcase name="testBulletCollisionCheckNotNull" classname="invadem.ProjectileControllerTest" time="0.0"/>
+  <testcase name="testRemoveDestroyedBullet" classname="invadem.ProjectileControllerTest" time="0.0"/>
+  <testcase name="testAddBullet" classname="invadem.ProjectileControllerTest" time="0.0"/>
+  <testcase name="testRemoveOffScreenBullet" classname="invadem.ProjectileControllerTest" time="0.0"/>
+  <testcase name="testInvaderBulletNoFriendlyFire" classname="invadem.ProjectileControllerTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

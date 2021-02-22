@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InvaderController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ass2</a> &gt; <a href="index.source.html" class="el_package">invadem</a> &gt; <span class="el_source">InvaderController.java</span></div><h1>InvaderController.java</h1><pre class="source lang-java linenums">package invadem;
+
+import java.util.*;
+
+import processing.core.PImage;
+import processing.core.PApplet;
+
+
+public class InvaderController {
+
+    private List&lt;Invader&gt; invaders;
+    private int speedUp;
+    private long time;
+
+<span class="fc" id="L15">    public InvaderController(){</span>
+
+<span class="fc" id="L17">        invaders = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L19">    }</span>
+
+    public List&lt;Invader&gt; list(){
+<span class="fc" id="L22">        return this.invaders;</span>
+    }
+
+    public void draw(PApplet app){
+
+<span class="fc bfc" id="L27" title="All 2 branches covered.">        for(Invader invader: this.invaders){</span>
+<span class="fc" id="L28">            app.image(invader.getImg(),invader.getXPos(),invader.getYPos());</span>
+<span class="fc" id="L29">        }</span>
+<span class="fc" id="L30">    }</span>
+
+    //draws out explosion when invader hit
+    public void drawExplosion(PApplet app, PImage boom, List&lt;Invader&gt; invadersToRemove){
+
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        for(Invader invader: invadersToRemove){</span>
+<span class="fc" id="L36">            app.image(boom,invader.getXPos(),invader.getYPos());</span>
+<span class="fc" id="L37">        }</span>
+<span class="fc" id="L38">    }</span>
+
+    //sets up 40 invaders for a new game
+    public List&lt;Invader&gt; loadInvaders(PImage r1, PImage r2, PImage p1, PImage p2, PImage a1, PImage a2){
+
+<span class="fc" id="L43">        int xPos = 170;</span>
+<span class="fc" id="L44">        int yPos = 60;</span>
+<span class="fc" id="L45">        int counter = 0;</span>
+
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        for(int i = 0; i &lt; 40; i++) {</span>
+
+<span class="fc bfc" id="L49" title="All 2 branches covered.">            if(i &lt; 10){</span>
+<span class="fc" id="L50">                Invader invader = new ArmorInvader(xPos, yPos);</span>
+<span class="fc" id="L51">                invader.setSprite(a1, a2);</span>
+<span class="fc" id="L52">                invaders.add(invader);</span>
+
+<span class="fc" id="L54">            }</span>
+
+<span class="pc bpc" id="L56" title="1 of 4 branches missed.">            else if(i &gt;= 10 &amp;&amp; i &lt; 20){</span>
+<span class="fc" id="L57">                Invader invader = new PowerInvader(xPos, yPos);</span>
+<span class="fc" id="L58">                invader.setSprite(p1, p2);</span>
+<span class="fc" id="L59">                invaders.add(invader);</span>
+
+<span class="fc" id="L61">            }</span>
+            else {
+<span class="fc" id="L63">                Invader invader = new Invader(xPos, yPos);</span>
+<span class="fc" id="L64">                invader.setSprite(r1, r2);</span>
+<span class="fc" id="L65">                invaders.add(invader);</span>
+
+            }
+
+<span class="fc" id="L69">            counter++;</span>
+<span class="fc" id="L70">            xPos += 30;</span>
+
+<span class="fc bfc" id="L72" title="All 2 branches covered.">            if(counter == 10){</span>
+<span class="fc" id="L73">                yPos += 30;</span>
+<span class="fc" id="L74">                xPos = 170;</span>
+<span class="fc" id="L75">                counter = 0;</span>
+            }
+        }
+<span class="fc" id="L78">        return invaders;</span>
+    }
+
+
+    //allows one of the onscreen invaders to shoot a bullet
+    public Projectile randomShot(int wins, long millis){
+
+<span class="fc" id="L85">        Projectile p = null;</span>
+
+        //projectile rate of fire multiplier increments every time player wins a round
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        if(wins &lt; 4) {</span>
+<span class="fc" id="L89">            speedUp = wins;</span>
+        }
+        else{
+<span class="fc" id="L92">            speedUp = 4;</span>
+        }
+
+        //projectile rate of fire increases by 500ms every time player wins. Increments up till RoF = 1bullet/500ms
+<span class="fc bfc" id="L96" title="All 2 branches covered.">        if(millis &gt; 5000 + time - (speedUp*1000)){</span>
+<span class="fc" id="L97">            time = millis;</span>
+
+            //randomly selects invader that fires from existing invaders
+<span class="fc" id="L100">            Random ran = new Random();</span>
+<span class="fc" id="L101">            int r = ran.nextInt(invaders.size());</span>
+
+<span class="fc bfc" id="L103" title="All 2 branches covered.">            for(Invader invader: invaders){</span>
+
+<span class="fc bfc" id="L105" title="All 2 branches covered.">                if(invaders.indexOf(invader) == r) {</span>
+<span class="fc" id="L106">                   p =  invader.shoot();</span>
+                }
+<span class="fc" id="L108">            }</span>
+        }
+<span class="fc" id="L110">        return p;</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

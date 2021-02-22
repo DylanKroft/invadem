@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Invader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ass2</a> &gt; <a href="index.source.html" class="el_package">invadem</a> &gt; <span class="el_source">Invader.java</span></div><h1>Invader.java</h1><pre class="source lang-java linenums">package invadem;
+
+import processing.core.PImage;
+
+
+public class Invader extends GameObject {
+
+    private PImage sprite1;
+    private PImage sprite2;
+    private PImage currentSprite;
+<span class="fc" id="L11">    private int frameCount = 0; //controls invader horizontal movement to 1px per 2 frames</span>
+<span class="fc" id="L12">    private int moveCount = 0; //tracks pixels moved left and right</span>
+<span class="fc" id="L13">    private int downCount = 0; //controls invader horizontal movement to 1px per 2 frames</span>
+<span class="fc" id="L14">    private boolean horizontal = true; //checks whether invader should move horizontally</span>
+<span class="fc" id="L15">    private int movesDown = 0; //number of pixels invader moves down</span>
+
+    //Invader Constructor
+<span class="fc" id="L18">    public Invader(int xPos, int yPos){</span>
+
+<span class="fc" id="L20">        this.width = 16;</span>
+<span class="fc" id="L21">        this.height = 16;</span>
+<span class="fc" id="L22">        this.xPos = xPos;</span>
+<span class="fc" id="L23">        this.yPos = yPos;</span>
+<span class="fc" id="L24">        this.destroyed = false;</span>
+<span class="fc" id="L25">    }</span>
+
+    //switches between sprites to animate invaders
+    public void changeSprite(){
+
+<span class="fc bfc" id="L30" title="All 2 branches covered.">        if(currentSprite == sprite1){</span>
+<span class="fc" id="L31">            currentSprite = sprite2;</span>
+        }
+
+        else{
+<span class="fc" id="L35">            currentSprite = sprite1;</span>
+        }
+<span class="fc" id="L37">    }</span>
+
+    //sets two sprites for invader
+    public void setSprite(PImage sprite1, PImage sprite2){
+<span class="fc" id="L41">        this.sprite1 = sprite1;</span>
+<span class="fc" id="L42">        this.sprite2 = sprite2;</span>
+<span class="fc" id="L43">        this.currentSprite = this.sprite1;</span>
+<span class="fc" id="L44">    }</span>
+
+
+    @Override
+    //returns invader sprite in its current state
+    public PImage getImg(){
+<span class="fc" id="L50">        return currentSprite;</span>
+    }
+
+
+
+    //moves invader in specified pattern
+    public void move(){
+
+<span class="fc" id="L58">        frameCount++;</span>
+
+        //invader only moves 1px every 2 frames
+<span class="fc bfc" id="L61" title="All 6 branches covered.">        if(frameCount == 2 || moveCount == 60 || moveCount == 120) {</span>
+
+            //invader has moved 30 frames right
+<span class="fc bfc" id="L64" title="All 2 branches covered.">            if(moveCount == 60){</span>
+<span class="fc" id="L65">                this.moveDown();</span>
+            }
+
+<span class="fc bfc" id="L68" title="All 2 branches covered.">            else if(moveCount &lt;= 60){</span>
+<span class="fc" id="L69">                frameCount = 0;</span>
+<span class="fc" id="L70">                this.xPos++;</span>
+            }
+
+<span class="fc bfc" id="L73" title="All 2 branches covered.">            else if(moveCount == 120){</span>
+<span class="fc" id="L74">                this.moveDown();</span>
+            }
+
+            //invader has moved 30 frames left
+            else{
+<span class="fc" id="L79">                frameCount = 0;</span>
+<span class="fc" id="L80">                this.xPos--;</span>
+            }
+
+        }
+
+<span class="fc" id="L85">        downCount++;</span>
+
+        //moving horizontally
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        if(horizontal) {</span>
+<span class="fc" id="L89">            moveCount++;</span>
+        }
+<span class="fc" id="L91">    }</span>
+
+    public void moveDown(){
+<span class="fc" id="L94">        horizontal = false; //don't move horizontally</span>
+<span class="fc" id="L95">        frameCount = 0; //frames passed</span>
+
+        //sprite change when about to move down
+<span class="fc bfc" id="L98" title="All 2 branches covered.">        if(movesDown == 0){</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">            if(moveCount == 120){</span>
+<span class="fc" id="L100">                this.xPos--; //invader x-coordinate reset to starting position</span>
+            }
+<span class="fc" id="L102">            this.changeSprite();</span>
+
+        }
+
+<span class="fc bfc" id="L106" title="All 2 branches covered.">        if(downCount%2 == 0) {</span>
+<span class="fc" id="L107">            movesDown++;</span>
+<span class="fc" id="L108">            this.yPos++;</span>
+
+            //sprite change when moved down by 8px
+<span class="fc bfc" id="L111" title="All 2 branches covered.">            if(movesDown == 8){</span>
+<span class="fc" id="L112">                movesDown = 0;</span>
+<span class="fc" id="L113">                horizontal = true;</span>
+<span class="fc" id="L114">                this.changeSprite();</span>
+
+                //number of pixels moved horizontally is reset each cycle (of right 30px and left 30px)
+<span class="fc bfc" id="L117" title="All 2 branches covered.">                if(moveCount == 120){</span>
+<span class="fc" id="L118">                    moveCount = 0;</span>
+                }
+            }
+        }
+<span class="fc" id="L122">    }</span>
+
+    //shoots (creates a new bullet)
+    public Projectile shoot(){
+<span class="fc" id="L126">        return new Projectile(this.xPos,this.yPos);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProjectileController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ass2</a> &gt; <a href="index.source.html" class="el_package">invadem</a> &gt; <span class="el_source">ProjectileController.java</span></div><h1>ProjectileController.java</h1><pre class="source lang-java linenums">package invadem;
+
+import processing.core.PApplet;
+import processing.core.PImage;
+
+
+import java.util.*;
+
+public class ProjectileController {
+
+    private LinkedList&lt;Projectile&gt; bullets;
+    private List&lt;Projectile&gt; bulletsToRemove;
+
+
+<span class="fc" id="L15">    public ProjectileController(){</span>
+
+<span class="fc" id="L17">        bullets = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L18">        bulletsToRemove = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L19">    }</span>
+
+    //adds a tank bullet to list of tank bullets moving upwards
+    public void addBullet(Projectile bullet){
+<span class="fc" id="L23">        bullets.add(bullet);</span>
+<span class="fc" id="L24">    }</span>
+
+    //returns list of tank bullets
+    public List&lt;Projectile&gt; list(){
+<span class="fc" id="L28">        return bullets;</span>
+    }
+
+    //draw out projectiles
+    public void draw(PApplet app, PImage bulletImg, PImage powerBulletImg){
+<span class="fc bfc" id="L33" title="All 2 branches covered.">        for(Projectile bullet: this.bullets){</span>
+
+<span class="fc bfc" id="L35" title="All 2 branches covered.">            if(bullet.getHeight() == 5){</span>
+<span class="fc" id="L36">                app.image(powerBulletImg,bullet.getXPos(),bullet.getYPos());</span>
+
+            }
+            else {
+<span class="fc" id="L40">                app.image(bulletImg, bullet.getXPos(), bullet.getYPos());</span>
+            }
+<span class="fc" id="L42">        }</span>
+<span class="fc" id="L43">    }</span>
+
+    //moves bullets in up if they're friendly, and down if they're shot by invaders
+    public void move(){
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        for(Projectile bullet: this.bullets){</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">            if(bullet.isFriendly()){</span>
+<span class="fc" id="L49">                bullet.moveUp();</span>
+            }
+            else{
+<span class="fc" id="L52">                bullet.moveDown();</span>
+            }
+<span class="fc" id="L54">        }</span>
+<span class="fc" id="L55">    }</span>
+
+    //removes bullets that have hit something or are off screen
+    public void removeBullets(){
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        for(Projectile bullet: this.bullets){</span>
+<span class="fc bfc" id="L60" title="All 6 branches covered.">            if(bullet.destroyed || bullet.getYPos() &gt; 490 || bullet.getYPos() &lt; 0){</span>
+<span class="fc" id="L61">                this.bulletsToRemove.add(bullet);</span>
+            }
+<span class="fc" id="L63">        }</span>
+<span class="fc" id="L64">        bullets.removeAll(bulletsToRemove);</span>
+<span class="fc" id="L65">    }</span>
+
+    //checks for collision between bullets and invaders/barriers/tank
+    public List&lt;Invader&gt; bulletCollisionCheck(List&lt;Barrier&gt; barriers, List&lt;Invader&gt; invaders, Tank tank){
+<span class="fc" id="L69">        List&lt;Invader&gt; invadersToRemove = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        for(Projectile bullet: this.bullets){</span>
+
+<span class="fc" id="L73">            this.checkCollision(bullet, tank);</span>
+
+<span class="fc bfc" id="L75" title="All 2 branches covered.">            if(bullet.isFriendly()){</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">                for(Invader invader: invaders){</span>
+<span class="fc" id="L77">                    this.checkCollision(bullet, invader);</span>
+
+<span class="fc bfc" id="L79" title="All 2 branches covered.">                    if(invader.isDestroyed()){</span>
+<span class="fc" id="L80">                        invadersToRemove.add(invader);</span>
+                    }
+<span class="fc" id="L82">                }</span>
+            }
+
+<span class="fc bfc" id="L85" title="All 2 branches covered.">            for(Barrier barrier: barriers){</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">                for(BComponent b: barrier.list()){</span>
+<span class="fc" id="L87">                    this.checkCollision(bullet, b);</span>
+<span class="fc" id="L88">                }</span>
+<span class="fc" id="L89">            }</span>
+<span class="fc" id="L90">        }</span>
+<span class="fc" id="L91">        return invadersToRemove;</span>
+    }
+
+    //checks for collision between lasers and invaders/barriers
+    public List&lt;Invader&gt; laserCollisionCheck(List&lt;Barrier&gt; barriers, List&lt;Invader&gt; invaders, Laser laser, Boolean laserFired){
+<span class="fc" id="L96">        List&lt;Invader&gt; invadersToRemove = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L98" title="All 2 branches covered.">        if(laserFired) {</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">            for (Invader invader : invaders) {</span>
+<span class="fc" id="L100">                this.checkCollision(laser, invader);</span>
+
+<span class="fc bfc" id="L102" title="All 2 branches covered.">                if (invader.isDestroyed()) {</span>
+<span class="fc" id="L103">                    invadersToRemove.add(invader);</span>
+                }
+<span class="fc" id="L105">            }</span>
+
+            //laser destroys each barrier component in 1 hit (cycles through all three phases of barrier components)
+<span class="fc bfc" id="L108" title="All 2 branches covered.">                for (Barrier barrier : barriers) {</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">                    for (BComponent component : barrier.list()) {</span>
+<span class="fc" id="L110">                        this.checkCollision(laser, component);</span>
+<span class="fc" id="L111">                        }</span>
+<span class="fc" id="L112">                    }</span>
+                }
+<span class="fc" id="L114">        return invadersToRemove;</span>
+    }
+
+
+
+    //AABB Collision detection
+    public void checkCollision(GameObject n1, GameObject n2){
+
+<span class="fc bfc" id="L122" title="All 2 branches covered.">        if(n1.getXPos() &lt; n2.getXPos() + n2.getWidth() &amp;&amp;</span>
+<span class="fc bfc" id="L123" title="All 2 branches covered.">                n1.getXPos() + n1.getWidth() &gt; n2.getXPos() &amp;&amp;</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">                n1.getYPos() &lt; n2.getYPos() + n2.getHeight() &amp;&amp;</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">                n1.getYPos() + n1.getHeight() &gt; n2.getYPos())</span>
+        {
+            //both GameObjects are &quot;destroyed&quot; upon collision
+<span class="fc" id="L128">            n1.destroy(n1);</span>
+<span class="fc" id="L129">            n2.destroy(n1);</span>
+        }
+<span class="fc" id="L131">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

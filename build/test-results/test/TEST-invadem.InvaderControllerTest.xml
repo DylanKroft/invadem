@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="invadem.InvaderControllerTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2019-11-10T04:49:02" hostname="Kroft2.local" time="0.001">
+  <properties/>
+  <testcase name="testInvaderControllerConstruction" classname="invadem.InvaderControllerTest" time="0.0"/>
+  <testcase name="testRandomShot" classname="invadem.InvaderControllerTest" time="0.0"/>
+  <testcase name="testFireRateCap" classname="invadem.InvaderControllerTest" time="0.0"/>
+  <testcase name="testLoad40Invaders" classname="invadem.InvaderControllerTest" time="0.0"/>
+  <testcase name="listInvaders" classname="invadem.InvaderControllerTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
